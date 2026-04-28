@@ -9,7 +9,7 @@
 <link rel="manifest" href="manifest.json"/>
 <link rel="apple-touch-icon" href="icon-192.png"/>
 <meta name="apple-mobile-web-app-title" content="Maratón"/>
-<title>Maratón 2026</title>
+<title>Maratón 2027</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
@@ -1173,14 +1173,15 @@ function showRutina(id){
         ${renderDay(r.dayB,'day-b','B',id)}
       </div>
       <div class="week-example">
-        <h3>🗓 Semana tipo</h3>
+        <h3>🗓 Tu semana tipo</h3>
         <div class="week-days">
-          <div class="wd"><div class="wd-day" style="color:var(--gym)">LUN</div><div class="wd-content"><div class="wd-label">Gym · Día A</div><div class="wd-sub">Lower Body + Core</div></div><div class="wd-icon">💪</div></div>
-          <div class="wd"><div class="wd-day" style="color:var(--run)">MAR</div><div class="wd-content"><div class="wd-label">Rodaje suave</div><div class="wd-sub">Zona 2 · 8–12 km</div></div><div class="wd-icon">🏃</div></div>
-          <div class="wd"><div class="wd-day" style="color:var(--blue)">MIÉ</div><div class="wd-content"><div class="wd-label">Gym · Día B</div><div class="wd-sub">Cadena post. + Upper</div></div><div class="wd-icon">💪</div></div>
-          <div class="wd"><div class="wd-day" style="color:var(--run)">JUE</div><div class="wd-content"><div class="wd-label">Rodaje calidad</div><div class="wd-sub">Intervalos o tempo</div></div><div class="wd-icon">⚡</div></div>
-          <div class="wd"><div class="wd-day">VIE</div><div class="wd-content"><div class="wd-label" style="color:var(--muted)">Descanso</div><div class="wd-sub">Recuperación activa</div></div><div class="wd-icon">😴</div></div>
-          <div class="wd"><div class="wd-day" style="color:var(--run)">DOM</div><div class="wd-content"><div class="wd-label">Tirada larga</div><div class="wd-sub">Ritmo cómodo</div></div><div class="wd-icon">🗓</div></div>
+          <div class="wd"><div class="wd-day">LUN</div><div class="wd-content"><div class="wd-label" style="color:var(--muted)">Descanso activo</div><div class="wd-sub">Movilidad suave</div></div><div class="wd-icon">😴</div></div>
+          <div class="wd"><div class="wd-day" style="color:var(--gym)">MAR</div><div class="wd-content"><div class="wd-label" style="color:var(--gym)">Gym A + Rodaje suave</div><div class="wd-sub">Lower Body + 6–8 km Zona 2</div></div><div class="wd-icon">💪🏃</div></div>
+          <div class="wd"><div class="wd-day">MIÉ</div><div class="wd-content"><div class="wd-label" style="color:var(--muted)">Descanso</div><div class="wd-sub">Recuperación entre sesiones</div></div><div class="wd-icon">😴</div></div>
+          <div class="wd"><div class="wd-day" style="color:var(--gym)">JUE</div><div class="wd-content"><div class="wd-label" style="color:var(--gym)">Gym B + Calidad</div><div class="wd-sub">Cadena post. + Intervalos/Tempo</div></div><div class="wd-icon">💪⚡</div></div>
+          <div class="wd"><div class="wd-day">VIE</div><div class="wd-content"><div class="wd-label" style="color:var(--muted)">Descanso</div><div class="wd-sub">Prepara el material del domingo</div></div><div class="wd-icon">😴</div></div>
+          <div class="wd"><div class="wd-day">SÁB</div><div class="wd-content"><div class="wd-label" style="color:var(--muted)">Descanso pre-carrera</div><div class="wd-sub">Hidratación · duerme pronto</div></div><div class="wd-icon">😴</div></div>
+          <div class="wd"><div class="wd-day" style="color:var(--run)">DOM</div><div class="wd-content"><div class="wd-label" style="color:var(--run)">Carrera popular o tirada</div><div class="wd-sub">5/10/15K popular · o 10 km entren.</div></div><div class="wd-icon">🏁</div></div>
         </div>
       </div>
     </div>`;
@@ -1302,13 +1303,20 @@ function showGymSeg(seg){
 }
 
 /* ════ SMART HOME ════ */
-const PLAN_START = new Date('2025-05-05'); // Lunes de inicio del plan
+const PLAN_START = new Date('2026-04-27'); // Lunes tras la media maratón del 26/04/2026
+const MARATHON_DATE = new Date('2027-04-25'); // Maratón objetivo
 
 function getCurrentWeek(){
   const now = new Date();
   const diff = now - PLAN_START;
   const week = Math.floor(diff / (7*24*3600*1000)) + 1;
   return Math.max(1, Math.min(52, week));
+}
+
+function getDaysToMarathon(){
+  const now = new Date();
+  const diff = MARATHON_DATE - now;
+  return Math.max(0, Math.ceil(diff / (24*3600*1000)));
 }
 
 function getPhaseForWeek(w){
@@ -1319,15 +1327,16 @@ function getPhaseForWeek(w){
   return {phase:'taper',label:'Fase 5 · Tapering',weeks:'Sem 47–52',pct:Math.round(w/52*100)};
 }
 
+// Tu horario real: Gym Mar+Jue, corres Mar+Jue+Dom (carreras populares o 10K)
 const todaySchedule = {
   // 0=Dom,1=Lun,2=Mar,3=Mié,4=Jue,5=Vie,6=Sáb
-  1:{type:'gym',cls:'gym-today',icon:'💪',title:'Gym · Día A',sub:'Lower Body + Core · ~55 min',btn:'ta-gym',btnLabel:'Ver Rutina',action:()=>{goTo('s-gym');showGymSeg('rutinas')}},
-  2:{type:'run',cls:'run-today',icon:'🏃',title:'Rodaje suave',sub:'Zona 2 · 8–12 km · 6:10–6:30/km',btn:'ta-run',btnLabel:'Ver Plan',action:()=>{goTo('s-run')}},
-  3:{type:'gym',cls:'gym-today',icon:'💪',title:'Gym · Día B',sub:'Cadena posterior + Upper · ~55 min',btn:'ta-gym',btnLabel:'Ver Rutina',action:()=>{goTo('s-gym');showGymSeg('rutinas')}},
-  4:{type:'run',cls:'run-today',icon:'⚡',title:'Rodaje de calidad',sub:'Intervalos, tempo o fartlek',btn:'ta-run',btnLabel:'Ver Plan',action:()=>{goTo('s-run')}},
-  5:{type:'rest',cls:'rest-today',icon:'😴',title:'Descanso activo',sub:'Movilidad suave · 15 min de estiramientos',btn:'ta-tips',btnLabel:'Consejos',action:()=>{goTo('s-tips')}},
-  6:{type:'run',cls:'run-today',icon:'🗓',title:'Tirada larga',sub:'Ritmo cómodo · Gel cada 45 min',btn:'ta-run',btnLabel:'Ver Plan',action:()=>{goTo('s-run')}},
-  0:{type:'rest',cls:'rest-today',icon:'😴',title:'Descanso · Recuperación',sub:'El cuerpo se adapta descansando',btn:'ta-tips',btnLabel:'Consejos',action:()=>{goTo('s-tips')}},
+  1:{type:'rest',cls:'rest-today',icon:'😴',title:'Descanso activo',sub:'Recuperación del domingo · Movilidad suave 15 min',btn:'ta-tips',btnLabel:'Ver consejos',action:()=>{goTo('s-tips')}},
+  2:{type:'gym',cls:'gym-today',icon:'💪',title:'Gym · Día A + Rodaje',sub:'Gym Lower Body+Core · luego rodaje suave 6–8 km',btn:'ta-gym',btnLabel:'Ver Rutina',action:()=>{goTo('s-gym');showGymSeg('rutinas')}},
+  3:{type:'rest',cls:'rest-today',icon:'😴',title:'Descanso',sub:'Recuperación entre sesiones · Estiramientos si puedes',btn:'ta-tips',btnLabel:'Ver consejos',action:()=>{goTo('s-tips')}},
+  4:{type:'gym',cls:'gym-today',icon:'💪',title:'Gym · Día B + Calidad',sub:'Gym Cadena post.+Upper · luego intervalos o tempo',btn:'ta-gym',btnLabel:'Ver Rutina',action:()=>{goTo('s-gym');showGymSeg('rutinas')}},
+  5:{type:'rest',cls:'rest-today',icon:'😴',title:'Descanso',sub:'Descansa bien para el domingo · Prepara el material',btn:'ta-tips',btnLabel:'Ver consejos',action:()=>{goTo('s-tips')}},
+  6:{type:'rest',cls:'rest-today',icon:'😴',title:'Descanso pre-carrera',sub:'Hidratación · Come bien · Duerme pronto',btn:'ta-tips',btnLabel:'Ver consejos',action:()=>{goTo('s-tips')}},
+  0:{type:'run',cls:'run-today',icon:'🏁',title:'Carrera o tirada larga',sub:'Carrera popular (5/10/15K) o 10 km de entrenamiento',btn:'ta-run',btnLabel:'Ver Plan',action:()=>{goTo('s-run')}},
 };
 
 function buildHome(){
@@ -1338,14 +1347,13 @@ function buildHome(){
   const today = todaySchedule[dayOfWeek];
   const dayNames = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
   const dayName = dayNames[dayOfWeek];
-
-  const circumference = 2 * Math.PI * 31;
-  const dashOffset = circumference * (1 - phaseInfo.pct/100);
+  const daysLeft = getDaysToMarathon();
 
   document.getElementById('homeContent').innerHTML = `
     <div style="padding:52px 20px 0;background:linear-gradient(180deg,rgba(200,255,0,0.03) 0%,transparent 100%)">
       <div style="font-size:11px;font-weight:700;letter-spacing:3px;color:var(--neon);opacity:0.8;margin-bottom:8px">HOY · ${dayName.toUpperCase()}</div>
       <div style="font-family:var(--fd);font-size:44px;letter-spacing:1px;line-height:0.95;margin-bottom:4px">PLAN<br><span style="color:var(--neon)">MARATÓN</span></div>
+      <div style="font-size:11px;color:var(--muted);margin-bottom:16px">Valencia · 25 abril 2027</div>
     </div>
 
     <!-- TODAY CARD -->
@@ -1386,8 +1394,8 @@ function buildHome(){
 
     <!-- STATS -->
     <div class="stats-grid" style="margin-top:14px">
-      <div class="stat-card"><div class="stat-val" style="color:var(--run)">2:06</div><div class="stat-lbl">MEDIA HOY</div></div>
-      <div class="stat-card"><div class="stat-val" style="color:var(--neon)">${52-curWeek}</div><div class="stat-lbl">SEMANAS LEFT</div></div>
+      <div class="stat-card"><div class="stat-val" style="color:var(--run)">2:06</div><div class="stat-lbl">MEDIA ACTUAL</div></div>
+      <div class="stat-card"><div class="stat-val" style="color:var(--neon);font-size:${daysLeft>99?'16px':'20px'}">${daysLeft}</div><div class="stat-lbl">DÍAS PARA EL MARATÓN</div></div>
       <div class="stat-card"><div class="stat-val" style="color:var(--orange)">${phaseInfo.pct}%</div><div class="stat-lbl">COMPLETADO</div></div>
     </div>
 
@@ -1402,7 +1410,7 @@ function buildHome(){
       <div class="tile gym-tile" onclick="goTo('s-gym')">
         <div class="tile-icon">💪</div>
         <div class="tile-title">Gym</div>
-        <div class="tile-sub">Día A + Día B</div>
+        <div class="tile-sub">Mar+Jue · Día A y Día B</div>
       </div>
       <div class="tile" onclick="goTo('s-tips')" style="border-color:rgba(255,124,66,0.2)">
         <div class="tile-icon">⚡</div>
@@ -1412,15 +1420,16 @@ function buildHome(){
     </div>
 
     <!-- SEMANA TIPO -->
-    <div class="section-label">SEMANA TIPO</div>
+    <div class="section-label">TU SEMANA TIPO</div>
     <div class="week-example" style="margin:0 20px 32px">
       <div class="week-days">
-        <div class="wd ${dayOfWeek===1?'style="opacity:1"':''}"><div class="wd-day" style="${dayOfWeek===1?'color:var(--gym)':''}">LUN</div><div class="wd-content"><div class="wd-label" style="color:var(--gym)">Gym · Día A</div><div class="wd-sub">Lower Body + Core</div></div><div class="wd-icon">💪</div></div>
-        <div class="wd"><div class="wd-day" style="${dayOfWeek===2?'color:var(--run)':''}">MAR</div><div class="wd-content"><div class="wd-label" style="color:var(--run)">Rodaje suave</div><div class="wd-sub">Zona 2 · 8–12 km</div></div><div class="wd-icon">🏃</div></div>
-        <div class="wd"><div class="wd-day" style="${dayOfWeek===3?'color:var(--blue)':''}">MIÉ</div><div class="wd-content"><div class="wd-label" style="color:var(--gym)">Gym · Día B</div><div class="wd-sub">Cadena post. + Upper</div></div><div class="wd-icon">💪</div></div>
-        <div class="wd"><div class="wd-day" style="${dayOfWeek===4?'color:var(--run)':''}">JUE</div><div class="wd-content"><div class="wd-label" style="color:var(--run)">Rodaje calidad</div><div class="wd-sub">Intervalos o tempo</div></div><div class="wd-icon">⚡</div></div>
-        <div class="wd"><div class="wd-day">VIE</div><div class="wd-content"><div class="wd-label" style="color:var(--muted)">Descanso</div><div class="wd-sub">Recuperación activa</div></div><div class="wd-icon">😴</div></div>
-        <div class="wd"><div class="wd-day">DOM</div><div class="wd-content"><div class="wd-label" style="color:var(--run)">Tirada larga</div><div class="wd-sub">Ritmo cómodo</div></div><div class="wd-icon">🗓</div></div>
+        <div class="wd"><div class="wd-day" style="${dayOfWeek===1?'color:var(--muted2)':''}">LUN</div><div class="wd-content"><div class="wd-label" style="color:var(--muted)">Descanso activo</div><div class="wd-sub">Movilidad suave</div></div><div class="wd-icon">😴</div></div>
+        <div class="wd"><div class="wd-day" style="${dayOfWeek===2?'color:var(--gym)':''}">MAR</div><div class="wd-content"><div class="wd-label" style="color:var(--gym)">Gym A + Rodaje suave</div><div class="wd-sub">Lower Body + 6–8 km Zona 2</div></div><div class="wd-icon">💪🏃</div></div>
+        <div class="wd"><div class="wd-day" style="${dayOfWeek===3?'color:var(--muted2)':''}">MIÉ</div><div class="wd-content"><div class="wd-label" style="color:var(--muted)">Descanso</div><div class="wd-sub">Recuperación</div></div><div class="wd-icon">😴</div></div>
+        <div class="wd"><div class="wd-day" style="${dayOfWeek===4?'color:var(--gym)':''}">JUE</div><div class="wd-content"><div class="wd-label" style="color:var(--gym)">Gym B + Calidad</div><div class="wd-sub">Cadena post. + Intervalos/Tempo</div></div><div class="wd-icon">💪⚡</div></div>
+        <div class="wd"><div class="wd-day" style="${dayOfWeek===5?'color:var(--muted2)':''}">VIE</div><div class="wd-content"><div class="wd-label" style="color:var(--muted)">Descanso</div><div class="wd-sub">Prepara el material del domingo</div></div><div class="wd-icon">😴</div></div>
+        <div class="wd"><div class="wd-day" style="${dayOfWeek===6?'color:var(--muted2)':''}">SÁB</div><div class="wd-content"><div class="wd-label" style="color:var(--muted)">Descanso pre-carrera</div><div class="wd-sub">Hidratación · duerme pronto</div></div><div class="wd-icon">😴</div></div>
+        <div class="wd"><div class="wd-day" style="${dayOfWeek===0?'color:var(--run)':''}">DOM</div><div class="wd-content"><div class="wd-label" style="color:var(--run)">Carrera popular o tirada</div><div class="wd-sub">5/10/15K popular · o 10 km entren.</div></div><div class="wd-icon">🏁</div></div>
       </div>
     </div>
   `;
@@ -1553,7 +1562,7 @@ function renderDay(day, cls, letter, rutinaId){
         <div class="dc-badge">~${day.dur}</div>
       </div>
       <div class="ex-list">${exHtml}</div>
-      <div class="when-note">${letter==='A'?'<strong>Cuándo:</strong> Lunes · Al menos 24h antes de correr':'<strong>Cuándo:</strong> Miércoles/Jueves · Nunca el día antes de una tirada larga'}</div>
+      <div class="when-note">${letter==='A'?'<strong>Cuándo:</strong> Martes · Gym primero, luego rodaje suave 6–8 km':'<strong>Cuándo:</strong> Jueves · Gym primero, luego intervalos o tempo'}</div>
     </div>`;
 }
 
@@ -1621,15 +1630,15 @@ function calcPace(){
 const TRACKER_KEY='marathon_tracker_v1';
 const HISTORY_KEY='marathon_history_v1';
 const trackerDayDef=[
-  {day:'LUN',type:'Gym · Día A',run:false},
-  {day:'MAR',type:'Rodaje suave',run:true},
-  {day:'MIÉ',type:'Gym · Día B',run:false},
-  {day:'JUE',type:'Rodaje calidad',run:true},
+  {day:'LUN',type:'Descanso activo',run:false},
+  {day:'MAR',type:'Gym A + Rodaje suave',run:true},
+  {day:'MIÉ',type:'Descanso',run:false},
+  {day:'JUE',type:'Gym B + Calidad',run:true},
   {day:'VIE',type:'Descanso',run:false},
-  {day:'SÁB',type:'Tirada larga',run:true},
-  {day:'DOM',type:'Descanso',run:false},
+  {day:'SÁB',type:'Descanso pre-carrera',run:false},
+  {day:'DOM',type:'Carrera popular / Tirada',run:true},
 ];
-const todayDayIdx=()=>{const d=new Date().getDay();return d===0?6:d-1}; // 0=lun
+const todayDayIdx=()=>{const d=new Date().getDay();return d===0?6:d-1}; // 0=lun...6=dom
 
 function loadTracker(){
   try{return JSON.parse(localStorage.getItem(TRACKER_KEY))||{week:getCurrentWeek(),km:[0,0,0,0,0,0,0]};}
